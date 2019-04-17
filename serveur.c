@@ -21,7 +21,7 @@
 
 #include "fon.h"     		/* Primitives de la boite a outils */
 
-#define SERVICE_DEFAUT "6666"
+#define SERVICE_DEFAUT "1111"
 
 void serveur_appli (char *service);   /* programme serveur */
 
@@ -55,10 +55,10 @@ void serveur_appli(char *service){
 	srand(time(NULL));
 	struct sockaddr_in * addr;
 	char tmp[256];
-  int Sn = h_socket(AF_INET,SOCK_STREAM);
+	int Sn = h_socket(AF_INET,SOCK_STREAM);
 	adr_socket(service,"127.0.0.1",SOCK_STREAM,&addr);
 	h_bind(Sn,addr);
-  h_listen(Sn,1);
+	h_listen(Sn,1);
 	h_accept(Sn,addr);
 	h_reads(Sn,tmp,1);
 	int l = tmp[0];

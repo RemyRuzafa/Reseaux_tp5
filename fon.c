@@ -347,7 +347,6 @@ int h_reads ( int num_soc, char *tampon, int nb_octets )
 	{
 		nb_lus = read ( num_soc, tampon, nb_restant );
 
-
 #ifdef DEBUG
 	printf("%sH_READS apres read ..................\n",aff_debug);
 	printf("%sH_READS nb octets lus: %d \n",aff_debug, nb_lus);

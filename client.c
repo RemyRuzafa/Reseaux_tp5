@@ -69,8 +69,7 @@ void client_appli (char *serveur,char *service){
 
 	struct sockaddr_in * addr;
 	int Sn = h_socket(AF_INET,SOCK_STREAM);
-	adr_socket("6666",SERVEUR_DEFAUT,SOCK_STREAM,&addr);
-
+	adr_socket(SERVICE_DEFAUT,SERVEUR_DEFAUT,SOCK_STREAM,&addr);
 	h_connect(Sn,addr);
 	scanf("%d",&t);
 	char tmp[t];
@@ -84,7 +83,7 @@ void client_appli (char *serveur,char *service){
 			scanf("%d",&t);
 			tmp[i] = t;
 		}while(i<l);
-  	h_writes(Sn,tmp,l);
+  		h_writes(Sn,tmp,l);
 		h_reads(Sn,tmp,l);
 		for(int i=0;i<l;i++){
 			printf("%d",tmp[i]);
@@ -93,7 +92,7 @@ void client_appli (char *serveur,char *service){
 			}
 		}
 	}while(!fini);
-	printf("Bravo");
+	printf("Bravo\n");
 }
 
 /*****************************************************************************/
