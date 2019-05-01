@@ -68,35 +68,36 @@ void client_appli (char *serveur,char *service){
 	int fini;
 	struct sockaddr_in * addrC;
 
-	int SIDC = h_socket(AF_INET,SOCK_STREAM);
+	int SIDC = h_socket(AF_INET,SOCK_STREAM);	//On crée un socket TCP
 
 	adr_socket(SERVICE_DEFAUT,SERVEUR_DEFAUT,SOCK_STREAM,&addrC);
 
-	h_connect(SIDC,addrC);
+	h_connect(SIDC,addrC);	//On se connecte au serveur via ce socket
 
 	printf("Connexion effectuée\nNiveau : ");
+	scanf("%d",&t);	//Lecture du niveau (nombre d'emplacements de couleurs à trouver)
 
-	scanf("%d",&t);
-	char tmp[t];
+	char tmp[t];	//Tampon qui sert à envoyer et recevoir les données
 	tmp[0] = t;
 	l = t;
-	h_writes(SIDC,tmp,1);
+	h_writes(SIDC,tmp,1);	//On envoie la difficulté lue plus haut au serveur
 	int i=0;
 
 	int bp, mp, in;
 	printf("Les couleurs sont représentées par les entiers de 1 à %d\nLes résultats : 2 = bien placée, 1 = mal placée, 0 = incorrecte\n",l);
 	do{
 		fini = 1;
-		printf("\nProposition : \n");
+		printf("\nProposition :\n");
 		for(i=0;i<l;i++){
-			scanf("%d",&t);
+			scanf("%d",&t);	//On lit la proposition de l'utilisateur
 			tmp[i] = t;
 		}
-  		h_writes(SIDC,tmp,l);
-		h_reads(SIDC,tmp,l);
+  		h_writes(SIDC,tmp,l);	//On transmet cette proposition au serveur
+		h_reads(SIDC,tmp,l);	//On lit sa réponse
 		bp = 0;
 		mp = 0;
-		for(int i=0;i<l;i++){
+		for(int i=0;i<l;i++){	//Cette boucle calcule le nombre de couleurs justes et le nombre de couleurs mal placées
+					//(Pour les raisons évoquées dans le compte rendu)
 			switch(tmp[i]){
 				case(-2):
 					bp++;
@@ -113,10 +114,8 @@ void client_appli (char *serveur,char *service){
 					return;
 			}
 		}
-		printf("\n\n%d bien placées\n%d mal placées\n",bp,mp);
-	}while(!fini);
+		printf("\n\n%d bien placées\n%d mal placées\n",bp,mp);	//On affiche ces nombres
+	}while(!fini);	//Et on recommence tant que l'utilisateur n'a pas donné la bonne réponse
 	printf("\n\nBravo\n\n\n");
 	h_close(SIDC);
 }
-
-/*****************************************************************************/

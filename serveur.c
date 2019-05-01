@@ -56,25 +56,25 @@ void serveur_appli(char *service){
 	struct sockaddr_in * addrS;
 	char tmp[256];
 
-	int SIDS = h_socket(AF_INET,SOCK_STREAM);
+	int SIDS = h_socket(AF_INET,SOCK_STREAM);	//On crée un socket TCP
 
 	adr_socket(service,NULL,SOCK_STREAM,&addrS);
 
-	h_bind(SIDS,addrS);
+	h_bind(SIDS,addrS);	//On bind ce socket
 
-	h_listen(SIDS,5);
+	h_listen(SIDS,5);	//On attend qu'un client se connecte
 
 	struct sockaddr_in addrC;
-	int SIDC = h_accept(SIDS,&addrC);
+	int SIDC = h_accept(SIDS,&addrC);	//On accepte la connexion
 
-	h_reads(SIDC,tmp,1);
+	h_reads(SIDC,tmp,1);	//On lit la difficulté voulue par le client
 	int l = tmp[0];
 	char grille[l];
 	char ncouleurs[8];
 	int i;
 	int t;
 	printf("Niveau reçu : %d\nGénération de la grille\n",l);
-	for(i = 0; i<l; i++){
+	for(i = 0; i<l; i++){	//On génère la grille
 		t = (rand()%8)+1;
 		grille[i] = t;
 		printf("%d ",t);
@@ -84,7 +84,7 @@ void serveur_appli(char *service){
 	do{
 		diff = 0;
 		printf("Attente d'une proposition\n");
-		h_reads(SIDC,tmp,l);
+		h_reads(SIDC,tmp,l);	//On attend que le client propose quelque chose
 		for(i = 0; i<8; i++){
 			ncouleurs[i] = 0;
 		}
@@ -110,8 +110,8 @@ void serveur_appli(char *service){
 			}
 		}
 		printf("Envoi de la réponse\n");
-		h_writes(SIDC, tmp, l);
-	}while(diff);
-	h_close(SIDC);
+		h_writes(SIDC, tmp, l);	//On envoie la réponse au client
+	}while(diff);	//On recommence tant que le client n'a pas envoyé la bonne proposition
+	h_close(SIDC);	//On ferme la connexion
 	h_close(SIDS);
 }
