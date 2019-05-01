@@ -117,5 +117,5 @@ void client_appli (char *serveur,char *service){
 		printf("\n\n%d bien placées\n%d mal placées\n",bp,mp);	//On affiche ces nombres
 	}while(!fini);	//Et on recommence tant que l'utilisateur n'a pas donné la bonne réponse
 	printf("\n\nBravo\n\n\n");
-	h_close(SIDC);
+	h_close(SIDC);	//On ferme la connexion
 }
