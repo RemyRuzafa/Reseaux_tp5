@@ -63,36 +63,60 @@ int main(int argc, char *argv[])
 
 /* procedure correspondant au traitement du client de votre application */
 void client_appli (char *serveur,char *service){
-  int t;
+	int t;
 	int l;
 	int fini;
+	struct sockaddr_in * addrC;
 
-	struct sockaddr_in * addr;
-	int Sn = h_socket(AF_INET,SOCK_STREAM);
-	adr_socket(SERVICE_DEFAUT,SERVEUR_DEFAUT,SOCK_STREAM,&addr);
-	h_connect(Sn,addr);
+	int SIDC = h_socket(AF_INET,SOCK_STREAM);
+
+	adr_socket(SERVICE_DEFAUT,SERVEUR_DEFAUT,SOCK_STREAM,&addrC);
+
+	h_connect(SIDC,addrC);
+
+	printf("Connexion effectuée\nNiveau : ");
+
 	scanf("%d",&t);
 	char tmp[t];
 	tmp[0] = t;
 	l = t;
-	h_writes(Sn,tmp,1);
+	h_writes(SIDC,tmp,1);
 	int i=0;
+
+	int bp, mp, in;
+	printf("Les couleurs sont représentées par les entiers de 1 à %d\nLes résultats : 2 = bien placée, 1 = mal placée, 0 = incorrecte\n",l);
 	do{
 		fini = 1;
-		do{
+		printf("\nProposition : \n");
+		for(i=0;i<l;i++){
 			scanf("%d",&t);
 			tmp[i] = t;
-		}while(i<l);
-  		h_writes(Sn,tmp,l);
-		h_reads(Sn,tmp,l);
+		}
+  		h_writes(SIDC,tmp,l);
+		h_reads(SIDC,tmp,l);
+		bp = 0;
+		mp = 0;
 		for(int i=0;i<l;i++){
-			printf("%d",tmp[i]);
-			if(tmp[i]!=-2){
-				fini = 0;
+			switch(tmp[i]){
+				case(-2):
+					bp++;
+					break;
+				case(-1):
+					mp++;
+					fini = 0;
+					break;
+				case(0):
+					fini = 0;
+					break;
+				default:
+					printf("ERREUR");
+					return;
 			}
 		}
+		printf("\n\n%d bien placées\n%d mal placées\n",bp,mp);
 	}while(!fini);
-	printf("Bravo\n");
+	printf("\n\nBravo\n\n\n");
+	h_close(SIDC);
 }
 
 /*****************************************************************************/

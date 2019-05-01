@@ -53,53 +53,65 @@ int main(int argc,char *argv[]){
 /* Procedure correspondant au traitemnt du serveur de votre application */
 void serveur_appli(char *service){
 	srand(time(NULL));
-	struct sockaddr_in * addr;
+	struct sockaddr_in * addrS;
 	char tmp[256];
-	int Sn = h_socket(AF_INET,SOCK_STREAM);
-	adr_socket(service,"127.0.0.1",SOCK_STREAM,&addr);
-	h_bind(Sn,addr);
-	h_listen(Sn,1);
-	h_accept(Sn,addr);
-	h_reads(Sn,tmp,1);
+
+	int SIDS = h_socket(AF_INET,SOCK_STREAM);
+
+	adr_socket(service,NULL,SOCK_STREAM,&addrS);
+
+	h_bind(SIDS,addrS);
+
+	h_listen(SIDS,5);
+
+	struct sockaddr_in addrC;
+	int SIDC = h_accept(SIDS,&addrC);
+
+	h_reads(SIDC,tmp,1);
 	int l = tmp[0];
 	char grille[l];
 	char ncouleurs[8];
 	int i;
 	int t;
+	printf("Niveau reçu : %d\nGénération de la grille\n",l);
 	for(i = 0; i<l; i++){
 		t = (rand()%8)+1;
 		grille[i] = t;
+		printf("%d ",t);
 	}
+	printf("\n");
 	char diff;
 	do{
 		diff = 0;
-		h_reads(Sn,tmp,l);
+		printf("Attente d'une proposition\n");
+		h_reads(SIDC,tmp,l);
 		for(i = 0; i<8; i++){
 			ncouleurs[i] = 0;
 		}
 		for(i = 0; i<l; i++){
-			ncouleurs[grille[i]]++;
+			ncouleurs[grille[i]-1]++;
 		}
 		for(i = 0; i<l; i++){	//Priorité aux couleurs bien placées
 			if(tmp[i]==grille[i]){
-				ncouleurs[tmp[i]]--;
+				ncouleurs[tmp[i]-1]--;
 				tmp[i] = -2;	// -2 = couleur bien placée
 			}
 		}
 		for(i = 0; i<l; i++){	//Ensuite, on traite les couleurs mal placées ou incorrectes
 			if(tmp[i]!=-2){
-				if(ncouleurs[tmp[i]]>0){
-					ncouleurs[tmp[i]]--;
+				if(ncouleurs[tmp[i]-1]>0){
+					ncouleurs[tmp[i]-1]--;
 					tmp[i] = -1;	// -1 = couleur mal placée
-					diff = 1;
 				}
 				else{
 					tmp[i] = 0;	// 0 = couleur qui n'a rien à faire là
-					diff = 1;
 				}
+				diff = 1;
 			}
 		}
-		h_writes(Sn, tmp, l);
+		printf("Envoi de la réponse\n");
+		h_writes(SIDC, tmp, l);
 	}while(diff);
-	h_close (Sn);
+	h_close(SIDC);
+	h_close(SIDS);
 }

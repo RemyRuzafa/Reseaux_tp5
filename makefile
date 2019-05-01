@@ -1,4 +1,3 @@
-
 OBJ1 = fon.o client.o
 OBJ2 = fon.o serveur.o
 OPTIONS	=
@@ -34,8 +33,8 @@ all: ${EXEC}
 
 
 fon.o :  fon.h fon.c
-	gcc -DDEBUG -c fon.c
-	#gcc -c fon.c
+	gcc -c fon.c
+	#gcc -DDEBUG -c fon.c
 
 client.o : fon.h	client.c
 	gcc  $(CFLAGS) -c  client.c
@@ -48,7 +47,6 @@ client : ${OBJ1}
 
 serveur : ${OBJ2}
 	gcc $(LFLAGS) ${OBJ2} -o serveur $(OPTIONS)
-
 
 
 clean :
